@@ -1,0 +1,1 @@
+This project is being developed with Codapt. See: https://codapt.ai/

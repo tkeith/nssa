@@ -1,0 +1,6 @@
+{
+  "watch": ["node_modules/.prisma/client"],
+  "ext": "ts,js,json",
+  "ignoreRoot": [],
+  "exec": "next dev"
+}

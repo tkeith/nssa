@@ -1,0 +1,18 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./db.sqlite"
+}
+
+model GlobalAppState {
+  // for storing non-collection state of the application
+  // every column should have a default value
+  // do not remove this table
+  id        Int      @id @default(autoincrement())
+}
