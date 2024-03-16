@@ -1,4 +1,4 @@
-import { env } from "@/env.mjs";
+import { env } from "@/env";
 import { SYSTEM_PROMPT } from "@/server/lib/prompts";
 import { getPageContentForAi } from "@/server/lib/getPageContentForAI";
 import OpenAI from "openai";
@@ -46,7 +46,7 @@ export async function runScrapingTask(task: string): Promise<number> {
 
     let accumulatedResponse = "";
 
-    console.log("--- GPT ---");
+    console.log("\n--- GPT ---");
 
     for await (const chunk of openaiStream) {
       const newChunkContent = chunk.choices[0]?.delta?.content;
@@ -56,9 +56,9 @@ export async function runScrapingTask(task: string): Promise<number> {
       }
     }
     if (!accumulatedResponse.endsWith("\n")) {
-      console.log("\n");
+      console.log("");
     }
-    console.log("-----------");
+    console.log("-----------\n");
 
     const possibleActions = [
       "goto",
@@ -87,7 +87,7 @@ export async function runScrapingTask(task: string): Promise<number> {
             throw new Error(`element with pointer ${pointer} not found`);
           }
           await el.click();
-          waitSeconds = 10;
+          waitSeconds = 5;
         } else if (action === "type-without-pressing-enter") {
           const pointer = getTagContent(tagContent, "pointer");
           assert(
@@ -128,7 +128,7 @@ export async function runScrapingTask(task: string): Promise<number> {
           await el.type(text);
           await new Promise((resolve) => setTimeout(resolve, 100));
           await el.press("Enter");
-          waitSeconds = 10;
+          waitSeconds = 5;
         } else if (action === "answer") {
           const answer = parseInt(tagContent);
           return answer;
