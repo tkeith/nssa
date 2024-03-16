@@ -24,16 +24,17 @@ async function getStructuredPage(page: Page): Promise<StructuredElement> {
   const structuredRepresentation: StructuredElement = await page.evaluate(
     (): StructuredElement => {
       function isVisible(element: Element): boolean {
+        const checkVisRes = element?.checkVisibility?.() ?? true;
         let style;
         try {
           style = window.getComputedStyle(element);
         } catch (e) {
-          return element.checkVisibility();
+          return checkVisRes;
         }
         return (
-          (style == null || style.display !== "none") &&
-          style.visibility !== "hidden" &&
-          element.checkVisibility()
+          style?.display !== "none" &&
+          style?.visibility !== "hidden" &&
+          checkVisRes
         );
       }
 
@@ -190,6 +191,12 @@ function cleanStructuredElement(
     )
   ) {
     if (children.length === 1) {
+      if (typeof children[0] === "string") {
+        if (children[0] === "") {
+          return null;
+        }
+        return res; // make sure at least one wrapper around the text so it's clickable
+      }
       return children[0] ?? null;
     }
     if (children.length === 0) {

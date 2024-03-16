@@ -14,6 +14,7 @@
     "start": "next start"
   },
   "dependencies": {
+    "@anthropic-ai/sdk": "^0.18.0",
     "@headlessui/react": "^1.7.18",
     "@prisma/client": "^5.1.1",
     "@t3-oss/env-nextjs": "^0.7.0",
