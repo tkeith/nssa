@@ -1,8 +1,9 @@
-import { Page } from "puppeteer";
-import yaml from "yaml";
 import fs from "fs";
 import os from "os";
 import path from "path";
+
+import { Page } from "puppeteer";
+import yaml from "yaml";
 
 import { ParsedJson } from "@/lib/json-util";
 

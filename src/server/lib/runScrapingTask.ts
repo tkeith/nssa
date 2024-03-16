@@ -1,11 +1,12 @@
-import { env } from "@/env";
-import { SYSTEM_PROMPT } from "@/server/lib/prompts";
-import { getPageContentForAi } from "@/server/lib/getPageContentForAI";
-import OpenAI from "openai";
-import puppeteer, { Browser, Page } from "puppeteer";
-import yaml from "yaml";
-import getTagContent from "@/lib/getTagContent";
 import assert from "assert";
+
+import OpenAI from "openai";
+import puppeteer from "puppeteer";
+
+import { env } from "@/env";
+import getTagContent from "@/lib/getTagContent";
+import { getPageContentForAi } from "@/server/lib/getPageContentForAI";
+import { SYSTEM_PROMPT } from "@/server/lib/prompts";
 
 const openaiApiKey = env.OPENAI_API_KEY;
 
