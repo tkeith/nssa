@@ -3,8 +3,8 @@ import "@/styles/globals.css";
 import { Inter } from "next/font/google";
 import { cookies } from "next/headers";
 
-import APP_DESCRIPTION from "@/lib/APP_DESCRIPTION";
-import APP_TITLE from "@/lib/APP_TITLE";
+import APP_DESCRIPTION from "@/app/_lib/APP_DESCRIPTION";
+import APP_TITLE from "@/app/_lib/APP_TITLE";
 import { TRPCReactProvider } from "@/trpc/react";
 
 const inter = Inter({
