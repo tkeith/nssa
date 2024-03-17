@@ -115,7 +115,7 @@ export default function Home() {
           <div className="mx-auto max-w-7xl py-6 sm:px-6 lg:px-8">
             {account.status === "connected" ? (
               SUPPORTED_CHAIN_IDS.includes(account.chainId) ? (
-                <Oracles />
+                <Oracles address={account.address} />
               ) : (
                 <div className="flex h-64 items-center justify-center">
                   <p className="text-xl">Switch to a supported chain</p>

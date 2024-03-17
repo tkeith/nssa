@@ -1,5 +1,6 @@
 "use client";
 
+import { IDKitWidget, ISuccessResult } from "@worldcoin/idkit";
 import { ethers } from "ethers";
 import { useEffect, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
@@ -9,6 +10,9 @@ import { normalize } from "viem/ens";
 import sepoliaArtifact from "../../../hardhat/ignition/deployments/chain-11155111/artifacts/FactoryModule#Factory.json";
 import sepoliaDeployedAddresses from "../../../hardhat/ignition/deployments/chain-11155111/deployed_addresses.json";
 
+import oracleArtifact from "../../../hardhat/artifacts/contracts/Oracle.sol/Oracle.json";
+import { defaultAbiCoder } from "ethers/lib/utils";
+
 interface FormData {
   name: string;
   script: string;
@@ -17,8 +21,10 @@ interface FormData {
   cooloffPeriod: number;
 }
 
-export default function Oracles() {
+export default function Oracles(props: { address: string }) {
   const [selectedOracle, setSelectedOracle] = useState<string | null>(null);
+  const [hasStakedSelectedOracle, setHasStakedSelectedOracle] =
+    useState<boolean>(false);
   const { register, handleSubmit } = useForm<FormData>();
   const [oracles, setOracles] = useState<{ name: string; address: string }[]>(
     [],
@@ -66,6 +72,28 @@ export default function Oracles() {
     void fetchOracles();
   }, []);
 
+  useEffect(() => {
+    const checkStake = async () => {
+      if (selectedOracle) {
+        const oracleAddress = oracles.find((o) => o.name === selectedOracle)
+          ?.address;
+        if (oracleAddress) {
+          const oracle = new ethers.Contract(
+            oracleAddress,
+            oracleArtifact.abi,
+            signer,
+          );
+          const stakeAmount = await oracle.stakeAmountsByStakerAddress(
+            signer.getAddress(),
+          );
+          setHasStakedSelectedOracle(stakeAmount > 0);
+        }
+      }
+    };
+
+    void checkStake();
+  }, [selectedOracle]);
+
   const onSubmit: SubmitHandler<FormData> = async (data) => {
     const address = await signer.getAddress();
 
@@ -78,6 +106,80 @@ export default function Oracles() {
       data.cooloffPeriod,
       { from: address },
     );
+  };
+
+  const onSuccess = async (successResult: ISuccessResult) => {
+    console.log(successResult);
+    // {verification_level: 'orb', nullifier_hash: '0x286a5f6c0a81e575867f57fb5ac7173bdb14bae700842c077b8ec082e38b10ba', proof: '0x165a35d74952588e1f91d3b81243f72e12a3754e9f56e8b7…7a5777481b5384e9cc950ae5001da6ef07318b64745dca728', credential_type: 'orb', merkle_root: '0x288b800086b6b5a01ef99e00cf78ba2d2ab80edd3948af1123d642950205de13'}
+
+    const oracleAddress = oracles.find((o) => o.name === selectedOracle)
+      ?.address;
+    if (!oracleAddress) {
+      throw new Error("Oracle not found");
+    }
+
+    const oracle = new ethers.Contract(
+      oracleAddress,
+      oracleArtifact.abi,
+      signer,
+    );
+
+    const stakeAmount = await oracle.stakeRequirement();
+    console.log(`Stake Amount: ${stakeAmount}`);
+
+    console.log("props.address: ", props.address);
+
+    const signal = props.address;
+    const root = successResult.merkle_root;
+    const nullifierHash = successResult.nullifier_hash;
+    const proof = successResult.proof;
+    const unpackedProof = defaultAbiCoder.decode(["uint256[8]"], proof)[0];
+    const unpackedRoot = defaultAbiCoder.decode(["uint256"], root)[0];
+    const unpackedNullifierHash = defaultAbiCoder.decode(
+      ["uint256"],
+      nullifierHash,
+    )[0];
+
+    console.log(
+      JSON.stringify({
+        signal,
+        unpackedRoot,
+        unpackedNullifierHash,
+        unpackedProof,
+        other: {
+          value: stakeAmount,
+          from: props.address,
+        },
+      }),
+    );
+
+    const stakeTransaction = await oracle.stake(
+      signal,
+      root,
+      nullifierHash,
+      unpackedProof,
+      {
+        value: stakeAmount,
+        from: props.address,
+      },
+    );
+  };
+
+  const onUnstake = async () => {
+    const oracleAddress = oracles.find((o) => o.name === selectedOracle)
+      ?.address;
+    if (!oracleAddress) {
+      throw new Error("Oracle not found");
+    }
+
+    const oracle = new ethers.Contract(
+      oracleAddress,
+      oracleArtifact.abi,
+      signer,
+    );
+
+    const unstakeTransaction = await oracle.unstake();
+    console.log(`Unstake Transaction: ${unstakeTransaction}`);
   };
 
   return (
@@ -160,8 +262,39 @@ export default function Oracles() {
                   type="submit"
                 />
               </form>
+            ) : selectedOracle ? (
+              <div>
+                <IDKitWidget
+                  app_id="app_e48accc29bd23fe37afbd70ce56ecc8a" // must be an app set to on-chain in Developer Portal
+                  action="nssa"
+                  signal={props.address} // proof will only verify if the signal is unchanged, this prevents tampering
+                  onSuccess={onSuccess} // use onSuccess to call your smart contract
+                  // no use for handleVerify, so it is removed
+                  // use default verification_level (orb-only), as device credentials are not supported on-chain
+                >
+                  {({ open }) =>
+                    hasStakedSelectedOracle ? (
+                      <button
+                        onClick={onUnstake}
+                        className="rounded bg-red-500 px-4 py-2 font-bold text-white hover:bg-red-700"
+                      >
+                        Unstake
+                      </button>
+                    ) : (
+                      <button
+                        onClick={open}
+                        className="rounded bg-blue-500 px-4 py-2 font-bold text-white hover:bg-blue-700"
+                      >
+                        Stake
+                      </button>
+                    )
+                  }
+                </IDKitWidget>
+              </div>
             ) : (
-              <p>Display node information and status here.</p>
+              <div>
+                <p>Select an oracle or create a new one</p>
+              </div>
             )}
           </div>
         </div>

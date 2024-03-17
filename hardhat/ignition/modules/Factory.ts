@@ -10,7 +10,7 @@ const FactoryModule = buildModule("FactoryModule", (m) => {
   // string memory _actionId,
   // bool _ensEnabled
 
-  const worldEnabled = true;
+  const worldEnabled = false;
   const worldId = "0x469449f251692e0779667583026b5a1e99512157";
   const appId = "app_e48accc29bd23fe37afbd70ce56ecc8a";
   const actionId = "nssa";
