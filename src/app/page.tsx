@@ -1,18 +1,18 @@
-/* eslint-disable @next/next/no-img-element */
 "use client";
 
-import { Disclosure } from "@headlessui/react";
+/* eslint-disable @next/next/no-img-element */
+
+import { Disclosure, Tab } from "@headlessui/react";
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
 import { useAccount, useConnect, useDisconnect } from "wagmi";
 
-const navigation = [
-  { name: "Scraper Node", href: "#", current: true },
-  { name: "User Requests", href: "#", current: false },
-];
+import Oracles from "@/app/_components/Oracles";
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(" ");
 }
+
+const SUPPORTED_CHAIN_IDS = [11155111, 88880, 8453];
 
 export default function Home() {
   const account = useAccount();
@@ -30,25 +30,6 @@ export default function Home() {
                   <div className="flex items-center">
                     <div className="shrink-0">
                       <p className="text-lg text-white">NSSA</p>
-                    </div>
-                    <div className="hidden md:block">
-                      <div className="ml-10 flex items-baseline space-x-4">
-                        {navigation.map((item) => (
-                          <a
-                            key={item.name}
-                            href={item.href}
-                            className={classNames(
-                              item.current
-                                ? "bg-gray-900 text-white"
-                                : "text-gray-300 hover:bg-gray-700 hover:text-white",
-                              "rounded-md px-3 py-2 text-sm font-medium",
-                            )}
-                            aria-current={item.current ? "page" : undefined}
-                          >
-                            {item.name}
-                          </a>
-                        ))}
-                      </div>
                     </div>
                   </div>
                   <div className="hidden md:block">
@@ -101,24 +82,6 @@ export default function Home() {
               </div>
 
               <Disclosure.Panel className="md:hidden">
-                <div className="space-y-1 px-2 pb-3 pt-2 sm:px-3">
-                  {navigation.map((item) => (
-                    <Disclosure.Button
-                      key={item.name}
-                      as="a"
-                      href={item.href}
-                      className={classNames(
-                        item.current
-                          ? "bg-gray-900 text-white"
-                          : "text-gray-300 hover:bg-gray-700 hover:text-white",
-                        "block rounded-md px-3 py-2 text-base font-medium",
-                      )}
-                      aria-current={item.current ? "page" : undefined}
-                    >
-                      {item.name}
-                    </Disclosure.Button>
-                  ))}
-                </div>
                 <div className="border-t border-gray-700 pb-3 pt-4">
                   <div className="flex items-center px-5">
                     <div className="ml-3">
@@ -148,16 +111,21 @@ export default function Home() {
           )}
         </Disclosure>
 
-        <header className="bg-white shadow">
-          <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
-            <h1 className="text-3xl font-bold tracking-tight text-gray-900">
-              Dashboard
-            </h1>
-          </div>
-        </header>
         <main>
           <div className="mx-auto max-w-7xl py-6 sm:px-6 lg:px-8">
-            {/* Your content */}
+            {account.status === "connected" ? (
+              SUPPORTED_CHAIN_IDS.includes(account.chainId) ? (
+                <Oracles />
+              ) : (
+                <div className="flex h-64 items-center justify-center">
+                  <p className="text-xl">Switch to a supported chain</p>
+                </div>
+              )
+            ) : (
+              <div className="flex h-64 items-center justify-center">
+                <p className="text-xl">Connect your wallet to continue</p>
+              </div>
+            )}
           </div>
         </main>
       </div>
