@@ -28,7 +28,9 @@ export default function Home() {
                 <div className="flex h-16 items-center justify-between">
                   <div className="flex items-center">
                     <div className="shrink-0">
-                      <p className="text-lg text-white">NSSA</p>
+                      <p className="text-lg text-white">
+                        NSSA:&nbsp;&nbsp;&nbsp;the not-so-secret-agent
+                      </p>
                     </div>
                   </div>
                   <div className="hidden md:block">

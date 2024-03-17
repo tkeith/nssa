@@ -41,7 +41,16 @@ async function main() {
     console.log(`Cooloff: ${cooloff}`);
     const currentTimestamp = Math.floor(Date.now() / 1000);
     console.log(`Current Timestamp: ${currentTimestamp}`);
-    if (currentTimestamp >= lastUpdatedAt + cooloff) {
+    const currentBountiesHeld = (
+      await oracleContract.currentBountiesHeld()
+    ).toNumber();
+    const bountyAmount = (await oracleContract.bountyAmount()).toNumber();
+    console.log(`Current Bounties Held: ${currentBountiesHeld}`);
+    console.log(`Bounty Amount: ${bountyAmount}`);
+    if (
+      currentTimestamp >= lastUpdatedAt + cooloff &&
+      currentBountiesHeld >= bountyAmount
+    ) {
       const res = await runScrapingTask(oracleScript);
 
       console.log(`Result: ${res}`);
@@ -53,15 +62,18 @@ async function main() {
       );
       console.log(`Update Transaction: ${updateTransaction}`);
     } else {
-      console.log("Waiting for the cooloff period to end...");
-      const waitTimeSeconds = lastUpdatedAt + cooloff - currentTimestamp;
+      console.log(
+        "Waiting for the cooloff period to end or sufficient bounties to be held...",
+      );
+      let waitTimeSeconds = lastUpdatedAt + cooloff - currentTimestamp + 1;
+      if (waitTimeSeconds < 5) {
+        waitTimeSeconds = 5;
+      }
       console.log(`Waiting for ${waitTimeSeconds} seconds`);
       for (let i = 0; i < waitTimeSeconds; i++) {
         await new Promise((resolve) => setTimeout(resolve, 1000));
         process.stdout.write(".");
       }
-      // wait 1 more second
-      await new Promise((resolve) => setTimeout(resolve, 1000));
     }
   }
 }
