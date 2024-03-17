@@ -1,5 +1,9 @@
 import proceduresRouter from "@/server/api/routers/proceduresRouter";
-import { createTRPCRouter, mergeRouters } from "@/server/api/trpc";
+import {
+  createTRPCRouter,
+  mergeRouters,
+  createCallerFactory,
+} from "@/server/api/trpc";
 
 /**
  * This is the primary router for your server.
@@ -15,3 +19,5 @@ export const appRouter = mergeRouters(
 
 // export type definition of API
 export type AppRouter = typeof appRouter;
+
+export const createCaller = createCallerFactory(appRouter);

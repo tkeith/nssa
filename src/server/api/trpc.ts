@@ -7,7 +7,6 @@
  * need to use are documented accordingly near the end.
  */
 import { initTRPC } from "@trpc/server";
-import { NextRequest } from "next/server";
 import superjson from "superjson";
 import { ZodError } from "zod";
 
@@ -48,12 +47,11 @@ export const createInnerTRPCContext = (opts: CreateContextOptions) => {
  *
  * @see https://trpc.io/docs/context
  */
-export const createTRPCContext = (opts: { req: NextRequest }) => {
-  // Fetch stuff that depends on the request
-
-  return createInnerTRPCContext({
-    headers: opts.req.headers,
-  });
+export const createTRPCContext = async (opts: { headers: Headers }) => {
+  return {
+    db,
+    ...opts,
+  };
 };
 
 /**
@@ -77,6 +75,13 @@ const t = initTRPC.context<typeof createTRPCContext>().create({
     };
   },
 });
+
+/**
+ * Create a server-side caller.
+ *
+ * @see https://trpc.io/docs/server/server-side-calls
+ */
+export const createCallerFactory = t.createCallerFactory;
 
 /**
  * 3. ROUTER & PROCEDURE (THE IMPORTANT BIT)
