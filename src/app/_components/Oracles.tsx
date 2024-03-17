@@ -36,6 +36,8 @@ export default function Oracles(props: { address: string }) {
     [],
   );
   const [oracleBalance, setOracleBalance] = useState<number>(0);
+  const [oracleLastUpdated, setOracleLastUpdated] = useState<number>(0);
+  const [oracleCurrentValue, setOracleCurrentValue] = useState<number>(0);
 
   const deploymentByChainId = {
     // sepolia
@@ -98,6 +100,12 @@ export default function Oracles(props: { address: string }) {
           // Fetch the balance of the oracle address
           const balance = await provider.getBalance(oracleAddress);
           setOracleBalance(balance.toNumber());
+
+          // Fetch the last updated time and current value of the oracle
+          const lastUpdated = await oracle.lastUpdatedAt();
+          const currentValue = await oracle.value();
+          setOracleLastUpdated(lastUpdated.toNumber());
+          setOracleCurrentValue(currentValue.toNumber());
         }
       }
     };
@@ -358,7 +366,8 @@ export default function Oracles(props: { address: string }) {
                   <h3 className="mb-2 text-base font-semibold leading-6 text-gray-900">
                     Oracle Status
                   </h3>
-                  {/* Insert Oracle Status Code Here */}
+                  <p>Last updated at: {oracleLastUpdated}</p>
+                  <p>Current value: {oracleCurrentValue}</p>
                 </div>
               </div>
             ) : (
