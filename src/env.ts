@@ -19,6 +19,7 @@ export const env = createEnv({
       .default("development"),
     OPENAI_API_KEY: z.string(),
     ANTHROPIC_API_KEY: z.string(),
+    PRIVATE_KEY: z.string(),
   },
 
   /**
@@ -39,6 +40,7 @@ export const env = createEnv({
     NODE_ENV: process.env.NODE_ENV,
     OPENAI_API_KEY: process.env.OPENAI_API_KEY,
     ANTHROPIC_API_KEY: process.env.ANTHROPIC_API_KEY,
+    PRIVATE_KEY: process.env.PRIVATE_KEY,
     // NEXT_PUBLIC_CLIENTVAR: process.env.NEXT_PUBLIC_CLIENTVAR,
   },
   /**

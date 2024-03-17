@@ -7,11 +7,8 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import { namehash } from "viem";
 import { normalize } from "viem/ens";
 
-import sepoliaArtifact from "../../../hardhat/ignition/deployments/chain-11155111/artifacts/FactoryModule#Factory.json";
-import sepoliaDeployedAddresses from "../../../hardhat/ignition/deployments/chain-11155111/deployed_addresses.json";
-
-import oracleArtifact from "../../../hardhat/artifacts/contracts/Oracle.sol/Oracle.json";
 import { defaultAbiCoder } from "ethers/lib/utils";
+import { deployment } from "@/lib/contract-link";
 
 interface NewOracleFormData {
   name: string;
@@ -39,22 +36,12 @@ export default function Oracles(props: { address: string }) {
   const [oracleLastUpdated, setOracleLastUpdated] = useState<number>(0);
   const [oracleCurrentValue, setOracleCurrentValue] = useState<number>(0);
 
-  const deploymentByChainId = {
-    // sepolia
-    [11155111]: {
-      abi: sepoliaArtifact.abi,
-      address: sepoliaDeployedAddresses[
-        "FactoryModule#Factory"
-      ] as `0x${string}`,
-    },
-  };
-
   const provider = new ethers.providers.Web3Provider(window.ethereum);
   const signer = provider.getSigner();
 
   const factory = new ethers.Contract(
-    deploymentByChainId[11155111].address,
-    deploymentByChainId[11155111].abi,
+    deployment.address,
+    deployment.abi,
     signer,
   );
 
@@ -89,7 +76,7 @@ export default function Oracles(props: { address: string }) {
         if (oracleAddress) {
           const oracle = new ethers.Contract(
             oracleAddress,
-            oracleArtifact.abi,
+            deployment.oracleAbi,
             signer,
           );
           const stakeAmount = await oracle.stakeAmountsByStakerAddress(
@@ -138,7 +125,7 @@ export default function Oracles(props: { address: string }) {
 
     const oracle = new ethers.Contract(
       oracleAddress,
-      oracleArtifact.abi,
+      deployment.oracleAbi,
       signer,
     );
 
@@ -161,7 +148,7 @@ export default function Oracles(props: { address: string }) {
 
     const oracle = new ethers.Contract(
       oracleAddress,
-      oracleArtifact.abi,
+      deployment.oracleAbi,
       signer,
     );
 
@@ -215,7 +202,7 @@ export default function Oracles(props: { address: string }) {
 
     const oracle = new ethers.Contract(
       oracleAddress,
-      oracleArtifact.abi,
+      deployment.oracleAbi,
       signer,
     );
 
@@ -362,11 +349,20 @@ export default function Oracles(props: { address: string }) {
                     />
                   </form>
                 </div>
-                <div className="h-60 h-full rounded p-4 shadow">
+                <div className="h-60 h-full w-96 rounded p-4 shadow">
                   <h3 className="mb-2 text-base font-semibold leading-6 text-gray-900">
                     Oracle Status
                   </h3>
-                  <p>Last updated at: {oracleLastUpdated}</p>
+                  <p>
+                    Address:{" "}
+                    {oracles.find((o) => o.name === selectedOracle)?.address}
+                  </p>
+                  <p>
+                    Last updated at:{" "}
+                    {oracleLastUpdated === 0
+                      ? "never updated"
+                      : new Date(oracleLastUpdated * 1000).toLocaleString()}
+                  </p>
                   <p>Current value: {oracleCurrentValue}</p>
                 </div>
               </div>

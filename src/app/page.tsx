@@ -7,12 +7,11 @@ import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
 import { useAccount, useConnect, useDisconnect } from "wagmi";
 
 import Oracles from "@/app/_components/Oracles";
+import { CHAIN_ID } from "@/lib/contract-link";
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(" ");
 }
-
-const SUPPORTED_CHAIN_IDS = [11155111, 88880, 8453];
 
 export default function Home() {
   const account = useAccount();
@@ -114,7 +113,7 @@ export default function Home() {
         <main>
           <div className="mx-auto max-w-7xl py-6 sm:px-6 lg:px-8">
             {account.status === "connected" ? (
-              SUPPORTED_CHAIN_IDS.includes(account.chainId) ? (
+              [CHAIN_ID].includes(account.chainId) ? (
                 <Oracles address={account.address} />
               ) : (
                 <div className="flex h-64 items-center justify-center">

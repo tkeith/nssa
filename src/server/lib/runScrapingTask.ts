@@ -4,10 +4,10 @@ import Anthropic from "@anthropic-ai/sdk";
 import OpenAI from "openai";
 import puppeteer from "puppeteer";
 
-import { env } from "@/env";
-import getTagContent from "@/lib/getTagContent";
-import { getPageContentForAi } from "@/server/lib/getPageContentForAI";
-import { ACTIONS_PROMPT, SYSTEM_PROMPT } from "@/server/lib/prompts";
+import { env } from "../../env";
+import getTagContent from "../../lib/getTagContent";
+import { getPageContentForAi } from "../../server/lib/getPageContentForAI";
+import { ACTIONS_PROMPT, SYSTEM_PROMPT } from "../../server/lib/prompts";
 
 const MODEL_TO_USE: "openai" | "anthropic" = "openai";
 

@@ -1,16 +1,69 @@
 import "dotenv/config";
 
-import { runScrapingTask } from "@/server/lib/runScrapingTask";
+import { ethers } from "ethers";
+
+import { runScrapingTask } from "../lib/runScrapingTask";
+
+import { env } from "../../env";
+import { CHAIN_ID, deployment } from "@/lib/contract-link";
+
+const walletPrivateKey = env.PRIVATE_KEY;
+const chainId = CHAIN_ID;
+const tmpOracleAddress = process.argv[2];
+const oracleAbi = deployment.oracleAbi;
+const rpcUrl = deployment.rpcUrl;
+
+if (!tmpOracleAddress) {
+  throw new Error("No oracle address specified");
+}
+
+const oracleAddress = tmpOracleAddress as `0x${string}`;
 
 async function main() {
-  const task =
-    // "Use Google to find Travis Kelce's Twitter, visit it, and return the number of followers he has in integer format. For example, if he has 1.2 million followers, return <answer>1200000</answer>.";
-    // "Did Travis Kelce win his latest game? Answer 1 for yes, 2 for no.";
-    "What is the price of the cheapest train ticket from Boston to New York on April 2 2024 via Amtrak?";
+  // create wallet here
+  const wallet = new ethers.Wallet(walletPrivateKey);
+  const provider = new ethers.providers.JsonRpcProvider(rpcUrl);
+  const connectedWallet = wallet.connect(provider);
 
-  const res = await runScrapingTask(task);
+  const oracleContract = new ethers.Contract(
+    oracleAddress,
+    oracleAbi,
+    connectedWallet,
+  );
 
-  console.log(`Result: ${res}`);
+  const oracleScript = (await oracleContract.script()) as string;
+  console.log(`Oracle Script: ${oracleScript}`);
+
+  while (true) {
+    const lastUpdatedAt = (await oracleContract.lastUpdatedAt()).toNumber();
+    console.log(`Last Updated At: ${lastUpdatedAt}`);
+    const cooloff = (await oracleContract.cooloff()).toNumber();
+    console.log(`Cooloff: ${cooloff}`);
+    const currentTimestamp = Math.floor(Date.now() / 1000);
+    console.log(`Current Timestamp: ${currentTimestamp}`);
+    if (currentTimestamp >= lastUpdatedAt + cooloff) {
+      const res = await runScrapingTask(oracleScript);
+
+      console.log(`Result: ${res}`);
+
+      const updateTransaction = await oracleContract.updateValue(res);
+      const receipt = await updateTransaction.wait(1);
+      console.log(
+        `Transaction confirmed with ${receipt.confirmations} confirmations`,
+      );
+      console.log(`Update Transaction: ${updateTransaction}`);
+    } else {
+      console.log("Waiting for the cooloff period to end...");
+      const waitTimeSeconds = lastUpdatedAt + cooloff - currentTimestamp;
+      console.log(`Waiting for ${waitTimeSeconds} seconds`);
+      for (let i = 0; i < waitTimeSeconds; i++) {
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+        process.stdout.write(".");
+      }
+      // wait 1 more second
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+    }
+  }
 }
 
 void main()
