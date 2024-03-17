@@ -7,14 +7,13 @@ pragma solidity ^0.8.13;
 
 import { ByteHasher } from "./helpers/ByteHasher.sol";
 import { IWorldID } from "./interfaces/IWorldID.sol";
+// import { INameWrapper } from "./interfaces/INameWrapper.sol";
+// import { IPublicResolver } from "./interfaces/IPublicResolver.sol";
+// import { IReverseRegister } from "./interfaces/IReverseRegister.sol";
 
 contract Oracle {
 
   using ByteHasher for bytes;
-
-  IWorldID internal immutable worldId;
-  uint256 internal immutable externalNullifier;
-  uint256 internal immutable groupId = 1;
 
   event Updated(
     uint256 value,
@@ -25,8 +24,20 @@ contract Oracle {
   event Staked(address staker, uint256 amount);
   event Unstaked(address staker, uint256 amount);
 
+  // permanent - worldcoin
+  IWorldID internal immutable worldId;
+  uint256 internal immutable externalNullifier;
+  uint256 internal immutable groupId = 1;
+
+  // permanent - ens
+  bool internal immutable ensEnabled;
+  // INameWrapper internal immutable nameWrapper;
+  // IReverseRegister internal immutable reverseRegister;
+  // IPublicResolver internal immutable publicResolver;
+
   // permanent
   string public name;
+  bytes32 public node;
   string public script;
   uint256 public stakeRequirement;
   uint256 public bountyAmount;
@@ -44,15 +55,21 @@ contract Oracle {
 
   constructor(
     string memory _name,
+    bytes32 _node,
     string memory _script,
     uint256 _stakeRequirement,
     uint256 _bountyAmount,
     uint256 _cooloff,
     IWorldID _worldId,
     string memory _appId,
-    string memory _actionId
+    string memory _actionId,
+    bool _ensEnabled
+    // INameWrapper _nameWrapper,
+    // IReverseRegister _reverseRegister,
+    // IPublicResolver _publicResolver
   ) {
     name = _name;
+    node = _node;
     script = _script;
     stakeRequirement = _stakeRequirement;
     bountyAmount = _bountyAmount;
@@ -61,6 +78,10 @@ contract Oracle {
     externalNullifier = abi
       .encodePacked(abi.encodePacked(_appId).hashToField(), _actionId)
       .hashToField();
+    ensEnabled = _ensEnabled;
+    // nameWrapper = _nameWrapper;
+    // reverseRegister = _reverseRegister;
+    // publicResolver = _publicResolver;
   }
 
   function stake(
@@ -81,7 +102,6 @@ contract Oracle {
       externalNullifier,
       proof
     );
-
 
     stakeAmountsByStakerAddress[msg.sender] = msg.value;
     stakerAddressesByNullifierHash[nullifierHash] = msg.sender;
