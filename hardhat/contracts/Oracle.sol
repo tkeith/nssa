@@ -54,6 +54,9 @@ contract Oracle {
   mapping(address => uint256) public votesToBanStakerByStakerAddress;
   mapping(address => mapping(address => bool)) public voterToVoteeToVoted;
 
+  // track the amount of payments received
+  uint256 public currentBountiesHeld;
+
   constructor(
     string memory _name,
     bytes32 _node,
@@ -85,6 +88,11 @@ contract Oracle {
     // nameWrapper = _nameWrapper;
     // reverseRegister = _reverseRegister;
     // publicResolver = _publicResolver;
+  }
+
+  // fallback function to accept payments
+  receive() external payable {
+    currentBountiesHeld += msg.value;
   }
 
   function stake(
@@ -127,13 +135,14 @@ contract Oracle {
 
   function updateValue(uint256 newValue) public {
     require(block.timestamp >= lastUpdatedAt + cooloff, "Cooloff period not yet passed");
-    require(address(this).balance >= bountyAmount, "Insufficient balance to pay bounty");
+    require(currentBountiesHeld >= bountyAmount, "Insufficient balance to pay bounty");
     require(stakeAmountsByStakerAddress[msg.sender] > 0, "Not a staker");
     require(votesToBanStakerByStakerAddress[msg.sender] < 5, "Staker is banned");
     value = newValue;
     lastUpdatedBy = msg.sender;
     lastUpdatedAt = block.timestamp;
     payable(msg.sender).transfer(bountyAmount);
+    currentBountiesHeld -= bountyAmount;
     emit Updated(newValue, block.timestamp, msg.sender);
   }
 

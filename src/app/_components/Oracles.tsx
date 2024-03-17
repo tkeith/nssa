@@ -13,7 +13,7 @@ import sepoliaDeployedAddresses from "../../../hardhat/ignition/deployments/chai
 import oracleArtifact from "../../../hardhat/artifacts/contracts/Oracle.sol/Oracle.json";
 import { defaultAbiCoder } from "ethers/lib/utils";
 
-interface FormData {
+interface NewOracleFormData {
   name: string;
   script: string;
   stakeRequirement: number;
@@ -21,14 +21,21 @@ interface FormData {
   cooloffPeriod: number;
 }
 
+interface FundBountyFormData {
+  amount: number;
+}
+
 export default function Oracles(props: { address: string }) {
   const [selectedOracle, setSelectedOracle] = useState<string | null>(null);
   const [hasStakedSelectedOracle, setHasStakedSelectedOracle] =
     useState<boolean>(false);
-  const { register, handleSubmit } = useForm<FormData>();
+  const { register, handleSubmit } = useForm<NewOracleFormData>();
+  const { register: registerFundBounty, handleSubmit: handleSubmitFundBounty } =
+    useForm<FundBountyFormData>();
   const [oracles, setOracles] = useState<{ name: string; address: string }[]>(
     [],
   );
+  const [oracleBalance, setOracleBalance] = useState<number>(0);
 
   const deploymentByChainId = {
     // sepolia
@@ -87,6 +94,10 @@ export default function Oracles(props: { address: string }) {
             signer.getAddress(),
           );
           setHasStakedSelectedOracle(stakeAmount > 0);
+
+          // Fetch the balance of the oracle address
+          const balance = await provider.getBalance(oracleAddress);
+          setOracleBalance(balance.toNumber());
         }
       }
     };
@@ -94,7 +105,7 @@ export default function Oracles(props: { address: string }) {
     void checkStake();
   }, [selectedOracle]);
 
-  const onSubmit: SubmitHandler<FormData> = async (data) => {
+  const onSubmit: SubmitHandler<NewOracleFormData> = async (data) => {
     const address = await signer.getAddress();
 
     const res = await factory.createOracle(
@@ -106,6 +117,28 @@ export default function Oracles(props: { address: string }) {
       data.cooloffPeriod,
       { from: address },
     );
+  };
+
+  const onFundBounty: SubmitHandler<FundBountyFormData> = async (data) => {
+    const oracleAddress = oracles.find((o) => o.name === selectedOracle)
+      ?.address;
+    if (!oracleAddress) {
+      throw new Error("Oracle not found");
+    }
+
+    console.log(`Oracle Address: ${oracleAddress}`);
+
+    const oracle = new ethers.Contract(
+      oracleAddress,
+      oracleArtifact.abi,
+      signer,
+    );
+
+    const fundTransaction = await signer.sendTransaction({
+      to: oracleAddress,
+      value: data.amount,
+    });
+    console.log(`Fund Transaction: ${fundTransaction}`);
   };
 
   const onSuccess = async (successResult: ISuccessResult) => {
@@ -299,7 +332,27 @@ export default function Oracles(props: { address: string }) {
                   <h3 className="mb-2 text-base font-semibold leading-6 text-gray-900">
                     Fund Bounty
                   </h3>
-                  {/* Insert Fund Bounty Code Here */}
+                  <p>Current balance: {oracleBalance}</p>
+                  <form
+                    className="space-y-4"
+                    onSubmit={handleSubmitFundBounty(onFundBounty)}
+                  >
+                    <div className="flex flex-col">
+                      <label className="font-bold text-gray-700">Amount:</label>
+                      <input
+                        className="rounded-lg border-2 border-gray-200 p-2"
+                        type="number"
+                        {...registerFundBounty("amount", {
+                          valueAsNumber: true,
+                        })}
+                      />
+                    </div>
+                    <input
+                      className="rounded bg-blue-500 px-4 py-2 font-bold text-white hover:bg-blue-700"
+                      type="submit"
+                      value="Fund"
+                    />
+                  </form>
                 </div>
                 <div className="h-60 h-full rounded p-4 shadow">
                   <h3 className="mb-2 text-base font-semibold leading-6 text-gray-900">
