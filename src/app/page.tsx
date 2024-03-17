@@ -29,7 +29,7 @@ export default function Home() {
                   <div className="flex items-center">
                     <div className="shrink-0">
                       <p className="text-lg text-white">
-                        NSSA:&nbsp;&nbsp;&nbsp;the not-so-secret-agent
+                        NSSA:&nbsp;&nbsp;&nbsp;the not so secret agent
                       </p>
                     </div>
                   </div>
