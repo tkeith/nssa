@@ -13,6 +13,7 @@ const config = {
     "plugin:react-server-components/recommended",
     "plugin:react/recommended",
   ],
+  ignorePatterns: ["hardhat"],
   rules: {
     "@typescript-eslint/array-type": "off",
     "@typescript-eslint/consistent-type-definitions": "off",
