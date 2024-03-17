@@ -185,7 +185,7 @@ export default function Oracles(props: { address: string }) {
   return (
     <div className="flex">
       <div className="w-1/4 bg-white shadow sm:rounded-lg">
-        <div className="px-4 py-5 sm:p-6">
+        <div className="h-60 px-4 py-5 sm:p-6">
           <h3 className="text-base font-semibold leading-6 text-gray-900">
             Oracles
           </h3>
@@ -208,9 +208,9 @@ export default function Oracles(props: { address: string }) {
           </div>
         </div>
       </div>
-      <div className="w-3/4 bg-white shadow sm:rounded-lg">
-        <div className="px-4 py-5 sm:p-6">
-          <div className="mt-2 max-w-xl text-sm text-gray-500">
+      <div className="w-3/4 bg-white  sm:rounded-lg">
+        <div className="px-4 ">
+          <div className="max-w-xl text-sm text-gray-500">
             {selectedOracle === "New Oracle" ? (
               <form className="space-y-4" onSubmit={handleSubmit(onSubmit)}>
                 <div className="flex flex-col">
@@ -263,33 +263,50 @@ export default function Oracles(props: { address: string }) {
                 />
               </form>
             ) : selectedOracle ? (
-              <div>
-                <IDKitWidget
-                  app_id="app_e48accc29bd23fe37afbd70ce56ecc8a" // must be an app set to on-chain in Developer Portal
-                  action="nssa"
-                  signal={props.address} // proof will only verify if the signal is unchanged, this prevents tampering
-                  onSuccess={onSuccess} // use onSuccess to call your smart contract
-                  // no use for handleVerify, so it is removed
-                  // use default verification_level (orb-only), as device credentials are not supported on-chain
-                >
-                  {({ open }) =>
-                    hasStakedSelectedOracle ? (
-                      <button
-                        onClick={onUnstake}
-                        className="rounded bg-red-500 px-4 py-2 font-bold text-white hover:bg-red-700"
-                      >
-                        Unstake
-                      </button>
-                    ) : (
-                      <button
-                        onClick={open}
-                        className="rounded bg-blue-500 px-4 py-2 font-bold text-white hover:bg-blue-700"
-                      >
-                        Stake
-                      </button>
-                    )
-                  }
-                </IDKitWidget>
+              <div className="grid grid-cols-3 gap-4">
+                <div className="h-60 h-full rounded p-4 shadow">
+                  <h3 className="mb-2 text-base font-semibold leading-6 text-gray-900">
+                    Staking
+                  </h3>
+                  <IDKitWidget
+                    app_id="app_e48accc29bd23fe37afbd70ce56ecc8a" // must be an app set to on-chain in Developer Portal
+                    action="nssa"
+                    signal={props.address} // proof will only verify if the signal is unchanged, this prevents tampering
+                    onSuccess={onSuccess} // use onSuccess to call your smart contract
+                    // no use for handleVerify, so it is removed
+                    // use default verification_level (orb-only), as device credentials are not supported on-chain
+                  >
+                    {({ open }) =>
+                      hasStakedSelectedOracle ? (
+                        <button
+                          onClick={onUnstake}
+                          className="rounded bg-red-500 px-4 py-2 font-bold text-white hover:bg-red-700"
+                        >
+                          Unstake
+                        </button>
+                      ) : (
+                        <button
+                          onClick={open}
+                          className="rounded bg-blue-500 px-4 py-2 font-bold text-white hover:bg-blue-700"
+                        >
+                          Stake
+                        </button>
+                      )
+                    }
+                  </IDKitWidget>
+                </div>
+                <div className="h-60 h-full rounded p-4 shadow">
+                  <h3 className="mb-2 text-base font-semibold leading-6 text-gray-900">
+                    Fund Bounty
+                  </h3>
+                  {/* Insert Fund Bounty Code Here */}
+                </div>
+                <div className="h-60 h-full rounded p-4 shadow">
+                  <h3 className="mb-2 text-base font-semibold leading-6 text-gray-900">
+                    Oracle Status
+                  </h3>
+                  {/* Insert Oracle Status Code Here */}
+                </div>
               </div>
             ) : (
               <div>
