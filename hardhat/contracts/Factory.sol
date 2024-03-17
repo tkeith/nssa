@@ -18,6 +18,7 @@ contract Factory {
   );
 
   // permanent - worldcoin
+  bool internal immutable worldEnabled;
   IWorldID internal immutable worldId;
   string internal appId;
   string internal actionId;
@@ -34,6 +35,7 @@ contract Factory {
   mapping(bytes32 => address) public oraclesByNode;
 
   constructor(
+    bool _worldEnabled,
     IWorldID _worldId,
     string memory _appId,
     string memory _actionId,
@@ -42,6 +44,7 @@ contract Factory {
     // IReverseRegister _reverseRegister,
     // IPublicResolver _publicResolver
   ) {
+    worldEnabled = _worldEnabled;
     worldId = _worldId;
     appId = _appId;
     actionId = _actionId;
@@ -72,6 +75,7 @@ contract Factory {
       stakeRequirement,
       bountyAmount,
       cooloff,
+      worldEnabled,
       worldId,
       appId,
       actionId,

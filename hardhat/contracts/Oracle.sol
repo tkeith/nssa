@@ -25,6 +25,7 @@ contract Oracle {
   event Unstaked(address staker, uint256 amount);
 
   // permanent - worldcoin
+  bool internal immutable worldEnabled;
   IWorldID internal immutable worldId;
   uint256 internal immutable externalNullifier;
   uint256 internal immutable groupId = 1;
@@ -60,6 +61,7 @@ contract Oracle {
     uint256 _stakeRequirement,
     uint256 _bountyAmount,
     uint256 _cooloff,
+    bool _worldEnabled,
     IWorldID _worldId,
     string memory _appId,
     string memory _actionId,
@@ -74,6 +76,7 @@ contract Oracle {
     stakeRequirement = _stakeRequirement;
     bountyAmount = _bountyAmount;
     cooloff = _cooloff;
+    worldEnabled = _worldEnabled;
     worldId = _worldId;
     externalNullifier = abi
       .encodePacked(abi.encodePacked(_appId).hashToField(), _actionId)
@@ -92,20 +95,25 @@ contract Oracle {
   ) public payable {
     require(msg.value >= stakeRequirement, "Incorrect stake amount");
     require(stakeAmountsByStakerAddress[msg.sender] == 0, "Already staked");
-    require(stakerAddressesByNullifierHash[nullifierHash] == address(0), "Nullifier hash already used");
 
-    worldId.verifyProof(
-      root,
-      groupId,
-      abi.encodePacked(signal).hashToField(),
-      nullifierHash,
-      externalNullifier,
-      proof
-    );
+    if (worldEnabled) {
+      require(stakerAddressesByNullifierHash[nullifierHash] == address(0), "Nullifier hash already used");
+
+      worldId.verifyProof(
+        root,
+        groupId,
+        abi.encodePacked(signal).hashToField(),
+        nullifierHash,
+        externalNullifier,
+        proof
+      );
+        
+      stakerAddressesByNullifierHash[nullifierHash] = msg.sender;
+      nullifierHashesByStakerAddress[msg.sender] = nullifierHash;
+
+    }
 
     stakeAmountsByStakerAddress[msg.sender] = msg.value;
-    stakerAddressesByNullifierHash[nullifierHash] = msg.sender;
-    nullifierHashesByStakerAddress[msg.sender] = nullifierHash;
     emit Staked(msg.sender, msg.value);
   }
 
