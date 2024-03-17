@@ -34,9 +34,7 @@
             "evm.methodIdentifiers",
             "metadata"
           ],
-          "": [
-            "ast"
-          ]
+          "": ["ast"]
         }
       }
     }
@@ -47,18 +45,10 @@
         "ast": {
           "absolutePath": "contracts/Factory.sol",
           "exportedSymbols": {
-            "ByteHasher": [
-              633
-            ],
-            "Factory": [
-              177
-            ],
-            "IWorldID": [
-              654
-            ],
-            "Oracle": [
-              609
-            ]
+            "ByteHasher": [633],
+            "Factory": [177],
+            "IWorldID": [654],
+            "Oracle": [609]
           },
           "id": 178,
           "license": "UNLICENSED",
@@ -66,12 +56,7 @@
           "nodes": [
             {
               "id": 1,
-              "literals": [
-                "solidity",
-                "^",
-                "0.8",
-                ".0"
-              ],
+              "literals": ["solidity", "^", "0.8", ".0"],
               "nodeType": "PragmaDirective",
               "src": "75:23:0"
             },
@@ -116,15 +101,11 @@
               "abstract": false,
               "baseContracts": [],
               "canonicalName": "Factory",
-              "contractDependencies": [
-                609
-              ],
+              "contractDependencies": [609],
               "contractKind": "contract",
               "fullyImplemented": true,
               "id": 177,
-              "linearizedBaseContracts": [
-                177
-              ],
+              "linearizedBaseContracts": [177],
               "name": "Factory",
               "nameLocation": "396:7:0",
               "nodeType": "ContractDefinition",
@@ -250,9 +231,7 @@
                     "pathNode": {
                       "id": 13,
                       "name": "IWorldID",
-                      "nameLocations": [
-                        "548:8:0"
-                      ],
+                      "nameLocations": ["548:8:0"],
                       "nodeType": "IdentifierPath",
                       "referencedDeclaration": 654,
                       "src": "548:8:0"
@@ -771,9 +750,7 @@
                           "pathNode": {
                             "id": 35,
                             "name": "IWorldID",
-                            "nameLocations": [
-                              "1041:8:0"
-                            ],
+                            "nameLocations": ["1041:8:0"],
                             "nodeType": "IdentifierPath",
                             "referencedDeclaration": 654,
                             "src": "1041:8:0"
@@ -1173,10 +1150,7 @@
                             "id": 94,
                             "name": "require",
                             "nodeType": "Identifier",
-                            "overloadedDeclarations": [
-                              -18,
-                              -18
-                            ],
+                            "overloadedDeclarations": [-18, -18],
                             "referencedDeclaration": -18,
                             "src": "1800:7:0",
                             "typeDescriptions": {
@@ -1354,10 +1328,7 @@
                             "id": 106,
                             "name": "require",
                             "nodeType": "Identifier",
-                            "overloadedDeclarations": [
-                              -18,
-                              -18
-                            ],
+                            "overloadedDeclarations": [-18, -18],
                             "referencedDeclaration": -18,
                             "src": "1871:7:0",
                             "typeDescriptions": {
@@ -1386,9 +1357,7 @@
                         "src": "1871:65:0"
                       },
                       {
-                        "assignments": [
-                          120
-                        ],
+                        "assignments": [120],
                         "declarations": [
                           {
                             "constant": false,
@@ -1411,9 +1380,7 @@
                               "pathNode": {
                                 "id": 118,
                                 "name": "Oracle",
-                                "nameLocations": [
-                                  "1942:6:0"
-                                ],
+                                "nameLocations": ["1942:6:0"],
                                 "nodeType": "IdentifierPath",
                                 "referencedDeclaration": 609,
                                 "src": "1942:6:0"
@@ -1628,9 +1595,7 @@
                               "pathNode": {
                                 "id": 121,
                                 "name": "Oracle",
-                                "nameLocations": [
-                                  "1962:6:0"
-                                ],
+                                "nameLocations": ["1962:6:0"],
                                 "nodeType": "IdentifierPath",
                                 "referencedDeclaration": 609,
                                 "src": "1962:6:0"
@@ -2361,9 +2326,7 @@
               "scope": 178,
               "src": "387:2031:0",
               "usedErrors": [],
-              "usedEvents": [
-                10
-              ]
+              "usedEvents": [10]
             }
           ],
           "src": "75:2344:0"
@@ -2374,15 +2337,9 @@
         "ast": {
           "absolutePath": "contracts/Oracle.sol",
           "exportedSymbols": {
-            "ByteHasher": [
-              633
-            ],
-            "IWorldID": [
-              654
-            ],
-            "Oracle": [
-              609
-            ]
+            "ByteHasher": [633],
+            "IWorldID": [654],
+            "Oracle": [609]
           },
           "id": 610,
           "license": "UNLICENSED",
@@ -2390,12 +2347,7 @@
           "nodes": [
             {
               "id": 179,
-              "literals": [
-                "solidity",
-                "^",
-                "0.8",
-                ".13"
-              ],
+              "literals": ["solidity", "^", "0.8", ".13"],
               "nodeType": "PragmaDirective",
               "src": "75:24:1"
             },
@@ -2457,9 +2409,7 @@
               "contractKind": "contract",
               "fullyImplemented": true,
               "id": 609,
-              "linearizedBaseContracts": [
-                609
-              ],
+              "linearizedBaseContracts": [609],
               "name": "Oracle",
               "nameLocation": "429:6:1",
               "nodeType": "ContractDefinition",
@@ -2470,9 +2420,7 @@
                   "libraryName": {
                     "id": 184,
                     "name": "ByteHasher",
-                    "nameLocations": [
-                      "447:10:1"
-                    ],
+                    "nameLocations": ["447:10:1"],
                     "nodeType": "IdentifierPath",
                     "referencedDeclaration": 633,
                     "src": "447:10:1"
@@ -2785,9 +2733,7 @@
                     "pathNode": {
                       "id": 209,
                       "name": "IWorldID",
-                      "nameLocations": [
-                        "725:8:1"
-                      ],
+                      "nameLocations": ["725:8:1"],
                       "nodeType": "IdentifierPath",
                       "referencedDeclaration": 654,
                       "src": "725:8:1"
@@ -4279,9 +4225,7 @@
                           "pathNode": {
                             "id": 273,
                             "name": "IWorldID",
-                            "nameLocations": [
-                              "1899:8:1"
-                            ],
+                            "nameLocations": ["1899:8:1"],
                             "nodeType": "IdentifierPath",
                             "referencedDeclaration": 654,
                             "src": "1899:8:1"
@@ -4488,10 +4432,7 @@
                             "id": 349,
                             "name": "require",
                             "nodeType": "Identifier",
-                            "overloadedDeclarations": [
-                              -18,
-                              -18
-                            ],
+                            "overloadedDeclarations": [-18, -18],
                             "referencedDeclaration": -18,
                             "src": "2744:7:1",
                             "typeDescriptions": {
@@ -4639,10 +4580,7 @@
                             "id": 357,
                             "name": "require",
                             "nodeType": "Identifier",
-                            "overloadedDeclarations": [
-                              -18,
-                              -18
-                            ],
+                            "overloadedDeclarations": [-18, -18],
                             "referencedDeclaration": -18,
                             "src": "2814:7:1",
                             "typeDescriptions": {
@@ -4841,10 +4779,7 @@
                                   "id": 368,
                                   "name": "require",
                                   "nodeType": "Identifier",
-                                  "overloadedDeclarations": [
-                                    -18,
-                                    -18
-                                  ],
+                                  "overloadedDeclarations": [-18, -18],
                                   "referencedDeclaration": -18,
                                   "src": "2918:7:1",
                                   "typeDescriptions": {
@@ -5765,10 +5700,7 @@
                             "id": 431,
                             "name": "require",
                             "nodeType": "Identifier",
-                            "overloadedDeclarations": [
-                              -18,
-                              -18
-                            ],
+                            "overloadedDeclarations": [-18, -18],
                             "referencedDeclaration": -18,
                             "src": "3484:7:1",
                             "typeDescriptions": {
@@ -5916,10 +5848,7 @@
                             "id": 441,
                             "name": "require",
                             "nodeType": "Identifier",
-                            "overloadedDeclarations": [
-                              -18,
-                              -18
-                            ],
+                            "overloadedDeclarations": [-18, -18],
                             "referencedDeclaration": -18,
                             "src": "3556:7:1",
                             "typeDescriptions": {
@@ -6484,10 +6413,7 @@
                             "id": 485,
                             "name": "require",
                             "nodeType": "Identifier",
-                            "overloadedDeclarations": [
-                              -18,
-                              -18
-                            ],
+                            "overloadedDeclarations": [-18, -18],
                             "referencedDeclaration": -18,
                             "src": "3889:7:1",
                             "typeDescriptions": {
@@ -6651,10 +6577,7 @@
                             "id": 495,
                             "name": "require",
                             "nodeType": "Identifier",
-                            "overloadedDeclarations": [
-                              -18,
-                              -18
-                            ],
+                            "overloadedDeclarations": [-18, -18],
                             "referencedDeclaration": -18,
                             "src": "3979:7:1",
                             "typeDescriptions": {
@@ -6802,10 +6725,7 @@
                             "id": 506,
                             "name": "require",
                             "nodeType": "Identifier",
-                            "overloadedDeclarations": [
-                              -18,
-                              -18
-                            ],
+                            "overloadedDeclarations": [-18, -18],
                             "referencedDeclaration": -18,
                             "src": "4069:7:1",
                             "typeDescriptions": {
@@ -6953,10 +6873,7 @@
                             "id": 516,
                             "name": "require",
                             "nodeType": "Identifier",
-                            "overloadedDeclarations": [
-                              -18,
-                              -18
-                            ],
+                            "overloadedDeclarations": [-18, -18],
                             "referencedDeclaration": -18,
                             "src": "4143:7:1",
                             "typeDescriptions": {
@@ -7571,10 +7488,7 @@
                             "id": 563,
                             "name": "require",
                             "nodeType": "Identifier",
-                            "overloadedDeclarations": [
-                              -18,
-                              -18
-                            ],
+                            "overloadedDeclarations": [-18, -18],
                             "referencedDeclaration": -18,
                             "src": "4478:7:1",
                             "typeDescriptions": {
@@ -7693,10 +7607,7 @@
                             "id": 573,
                             "name": "require",
                             "nodeType": "Identifier",
-                            "overloadedDeclarations": [
-                              -18,
-                              -18
-                            ],
+                            "overloadedDeclarations": [-18, -18],
                             "referencedDeclaration": -18,
                             "src": "4552:7:1",
                             "typeDescriptions": {
@@ -7869,10 +7780,7 @@
                             "id": 581,
                             "name": "require",
                             "nodeType": "Identifier",
-                            "overloadedDeclarations": [
-                              -18,
-                              -18
-                            ],
+                            "overloadedDeclarations": [-18, -18],
                             "referencedDeclaration": -18,
                             "src": "4614:7:1",
                             "typeDescriptions": {
@@ -8130,11 +8038,7 @@
               "scope": 610,
               "src": "420:4377:1",
               "usedErrors": [],
-              "usedEvents": [
-                194,
-                200,
-                206
-              ]
+              "usedEvents": [194, 200, 206]
             }
           ],
           "src": "75:4723:1"
@@ -8145,9 +8049,7 @@
         "ast": {
           "absolutePath": "contracts/helpers/ByteHasher.sol",
           "exportedSymbols": {
-            "ByteHasher": [
-              633
-            ]
+            "ByteHasher": [633]
           },
           "id": 634,
           "license": "MIT",
@@ -8155,12 +8057,7 @@
           "nodes": [
             {
               "id": 611,
-              "literals": [
-                "solidity",
-                "^",
-                "0.8",
-                ".10"
-              ],
+              "literals": ["solidity", "^", "0.8", ".10"],
               "nodeType": "PragmaDirective",
               "src": "32:24:2"
             },
@@ -8172,9 +8069,7 @@
               "contractKind": "library",
               "fullyImplemented": true,
               "id": 633,
-              "linearizedBaseContracts": [
-                633
-              ],
+              "linearizedBaseContracts": [633],
               "name": "ByteHasher",
               "nameLocation": "66:10:2",
               "nodeType": "ContractDefinition",
@@ -8475,9 +8370,7 @@
         "ast": {
           "absolutePath": "contracts/interfaces/IWorldID.sol",
           "exportedSymbols": {
-            "IWorldID": [
-              654
-            ]
+            "IWorldID": [654]
           },
           "id": 655,
           "license": "MIT",
@@ -8485,12 +8378,7 @@
           "nodes": [
             {
               "id": 635,
-              "literals": [
-                "solidity",
-                "^",
-                "0.8",
-                ".10"
-              ],
+              "literals": ["solidity", "^", "0.8", ".10"],
               "nodeType": "PragmaDirective",
               "src": "31:24:3"
             },
@@ -8502,9 +8390,7 @@
               "contractKind": "interface",
               "fullyImplemented": false,
               "id": 654,
-              "linearizedBaseContracts": [
-                654
-              ],
+              "linearizedBaseContracts": [654],
               "name": "IWorldID",
               "nameLocation": "67:8:3",
               "nodeType": "ContractDefinition",

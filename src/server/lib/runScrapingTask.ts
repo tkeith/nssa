@@ -9,7 +9,6 @@ import getTagContent from "@/lib/getTagContent";
 import { getPageContentForAi } from "@/server/lib/getPageContentForAI";
 import { ACTIONS_PROMPT, SYSTEM_PROMPT } from "@/server/lib/prompts";
 
-
 const MODEL_TO_USE: "openai" | "anthropic" = "openai";
 
 const openaiApiKey = env.OPENAI_API_KEY;
