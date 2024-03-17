@@ -30,9 +30,12 @@ contract Factory {
   // IPublicResolver internal immutable publicResolver;
 
   // mutable
+  uint256 public numberOfOracles;
   address[] public oracles;
+  mapping(uint256 => address) public oraclesById;
   mapping(string => address) public oraclesByName;
   mapping(bytes32 => address) public oraclesByNode;
+  mapping(address => string) public namesByOracleId;
 
   constructor(
     bool _worldEnabled,
@@ -85,8 +88,11 @@ contract Factory {
       // publicResolver
     );
     oracles.push(address(oracle));
+    oraclesById[numberOfOracles] = address(oracle);
     oraclesByName[name] = address(oracle);
     oraclesByNode[node] = address(oracle);
+    namesByOracleId[address(oracle)] = name;
+    numberOfOracles++;
 
     emit OracleCreated(oracles.length - 1, address(oracle));
   }

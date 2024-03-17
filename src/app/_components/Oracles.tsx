@@ -1,19 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { ethers } from "ethers";
+import { useEffect, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
-import {
-  createPublicClient,
-  createWalletClient,
-  custom,
-  getContract,
-  http,
-  namehash,
-} from "viem";
+import { namehash } from "viem";
 import { normalize } from "viem/ens";
-import * as sepoliaArtifact from "../../../hardhat/ignition/deployments/chain-11155111/artifacts/FactoryModule#Factory.json";
-import * as sepoliaDeployedAddresses from "../../../hardhat/ignition/deployments/chain-11155111/deployed_addresses.json";
-import { sepolia } from "viem/chains";
+
+import sepoliaArtifact from "../../../hardhat/ignition/deployments/chain-11155111/artifacts/FactoryModule#Factory.json";
+import sepoliaDeployedAddresses from "../../../hardhat/ignition/deployments/chain-11155111/deployed_addresses.json";
 
 interface FormData {
   name: string;
@@ -26,6 +20,9 @@ interface FormData {
 export default function Oracles() {
   const [selectedOracle, setSelectedOracle] = useState<string | null>(null);
   const { register, handleSubmit } = useForm<FormData>();
+  const [oracles, setOracles] = useState<{ name: string; address: string }[]>(
+    [],
+  );
 
   const deploymentByChainId = {
     // sepolia
@@ -37,50 +34,49 @@ export default function Oracles() {
     },
   };
 
-  const publicClient = createPublicClient({
-    chain: sepolia,
-    transport: http(),
-  });
+  const provider = new ethers.providers.Web3Provider(window.ethereum);
+  const signer = provider.getSigner();
 
-  const walletClient = createWalletClient({
-    chain: sepolia,
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access
-    transport: custom((window as any).ethereum!),
-  });
+  const factory = new ethers.Contract(
+    deploymentByChainId[11155111].address,
+    deploymentByChainId[11155111].abi,
+    signer,
+  );
 
-  const factory = getContract({
-    address: deploymentByChainId[11155111].address,
-    abi: deploymentByChainId[11155111].abi,
-    client: {
-      public: publicClient,
-      wallet: walletClient,
-    },
-  });
+  useEffect(() => {
+    const fetchOracles = async () => {
+      const numberOfOracles = await factory.numberOfOracles();
 
-  const oracles = ["Oracle 1", "Oracle 2", "Oracle 3", "New Oracle"]; // Replace with actual oracle list
+      console.log(`Number of Oracles: ${numberOfOracles}`);
+      console.log(factory.address);
+
+      const oracleList = [];
+      for (let i = 0; i < numberOfOracles; i++) {
+        const oracleAddress = await factory.oraclesById(i);
+        const oracleName = await factory.namesByOracleId(oracleAddress);
+        oracleList.push({
+          name: oracleName + ".nssa.eth",
+          address: oracleAddress,
+        });
+      }
+      setOracles(oracleList);
+      console.log(oracleList);
+    };
+
+    void fetchOracles();
+  }, []);
 
   const onSubmit: SubmitHandler<FormData> = async (data) => {
-    // function createOracle(
-    //   string memory name,
-    //   bytes32 node,
-    //   string memory script,
-    //   uint256 stakeRequirement,
-    //   uint256 bountyAmount,
-    //   uint256 cooloff
-    // )
+    const address = await signer.getAddress();
 
-    const address = (await walletClient.getAddresses())[0]!;
-
-    const res = await factory?.write?.createOracle?.(
-      [
-        data.name,
-        namehash(normalize(data.name + ".nssa.eth")),
-        data.script,
-        data.stakeRequirement,
-        data.bountyAmount,
-        data.cooloffPeriod,
-      ],
-      { account: address },
+    const res = await factory.createOracle(
+      data.name,
+      namehash(normalize(data.name + ".nssa.eth")),
+      data.script,
+      data.stakeRequirement,
+      data.bountyAmount,
+      data.cooloffPeriod,
+      { from: address },
     );
   };
 
@@ -92,27 +88,26 @@ export default function Oracles() {
             Oracles
           </h3>
           <div className="mt-2 max-w-xl text-sm text-gray-500">
-            {oracles.map((oracle, index) => (
-              <div
-                key={index}
-                className={`cursor-pointer rounded border p-2 ${
-                  selectedOracle === oracle
-                    ? "border-indigo-500 bg-indigo-100"
-                    : "border-gray-300"
-                }`}
-                onClick={() => setSelectedOracle(oracle)}
-              >
-                {oracle}
-              </div>
-            ))}
+            {[...oracles.map((o) => o.name), "New Oracle"].map(
+              (oracle, index) => (
+                <div
+                  key={index}
+                  className={`mb-1 cursor-pointer rounded border p-2 ${
+                    selectedOracle === oracle
+                      ? "border-indigo-500 bg-indigo-100"
+                      : "border-gray-300"
+                  }`}
+                  onClick={() => setSelectedOracle(oracle)}
+                >
+                  {oracle}
+                </div>
+              ),
+            )}
           </div>
         </div>
       </div>
       <div className="w-3/4 bg-white shadow sm:rounded-lg">
         <div className="px-4 py-5 sm:p-6">
-          <h3 className="text-base font-semibold leading-6 text-gray-900">
-            Node Information
-          </h3>
           <div className="mt-2 max-w-xl text-sm text-gray-500">
             {selectedOracle === "New Oracle" ? (
               <form className="space-y-4" onSubmit={handleSubmit(onSubmit)}>
