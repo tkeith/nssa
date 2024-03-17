@@ -2,5 +2,13 @@
   {
     "name": "Ethers (v5)",
     "prefix": "ethers"
+  },
+  {
+    "name": "wagmi",
+    "prefix": "wagmi"
+  },
+  {
+    "name": "@heroicons/react",
+    "prefix": "@heroicons/react"
   }
 ]
